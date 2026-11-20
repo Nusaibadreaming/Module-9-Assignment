@@ -1,0 +1,106 @@
+{
+  "info": {
+    "name": "JSONPlaceholder Users API Automation",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. GET All Users & Save ID",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200', function () {",
+              "  pm.response.to.have.status(200);",
+              "});",
+              "",
+              "const data = pm.response.json();",
+              "",
+              "pm.test('Response is a non-empty array', function () {",
+              "  pm.expect(Array.isArray(data)).to.be.true;",
+              "  pm.expect(data.length).to.be.greaterThan(0);",
+              "});",
+              "",
+              "pm.test('Each user has id, name, and email', function () {",
+              "  data.forEach((user) => {",
+              "    pm.expect(user).to.have.property('id');",
+              "    pm.expect(user).to.have.property('name');",
+              "    pm.expect(user).to.have.property('email');",
+              "  });",
+              "});",
+              "",
+              "const selectedUser = data[0];",
+              "pm.variables.set('userId', selectedUser.id);",
+              "pm.variables.set('updatedName', 'Updated User ' + Date.now());",
+              "pm.variables.set('updatedEmail', 'updated_' + Date.now() + '@example.com');",
+              "pm.variables.set('updatedCompanyName', 'Updated Corp ' + Date.now());"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://jsonplaceholder.typicode.com/users",
+          "protocol": "https",
+          "host": ["jsonplaceholder", "typicode", "com"],
+          "path": ["users"]
+        }
+      }
+    },
+    {
+      "name": "2. PUT User by Saved ID",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200', function () {",
+              "  pm.response.to.have.status(200);",
+              "});",
+              "",
+              "const resData = pm.response.json();",
+              "const expectedId = Number(pm.variables.get('userId'));",
+              "const expectedName = pm.variables.get('updatedName');",
+              "",
+              "pm.test('Returned ID matches stored variable ID', function () {",
+              "  pm.expect(resData.id).to.eql(expectedId);",
+              "});",
+              "",
+              "pm.test('Phone should not be empty', function () {",
+              "  pm.expect(resData.phone).to.be.a('string').and.not.empty;",
+              "});",
+              "",
+              "pm.test('Returned name matches updated name', function () {",
+              "  pm.expect(resData.name).to.eql(expectedName);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"{{updatedName}}\",\n  \"email\": \"{{updatedEmail}}\",\n  \"company\": {\n    \"name\": \"{{updatedCompanyName}}\"\n  }\n}"
+        },
+        "url": {
+          "raw": "https://jsonplaceholder.typicode.com/users/{{userId}}",
+          "protocol": "https",
+          "host": ["jsonplaceholder", "typicode", "com"],
+          "path": ["users", "{{userId}}"]
+        }
+      }
+    }
+  ]
+}
