@@ -1,0 +1,19 @@
+{
+  "name": "sqa-demo-webshop-automation",
+  "version": "1.0.0",
+  "description": "Playwright POM UI Automation and Postman/Newman API Automation",
+  "scripts": {
+    "test:q1": "npx playwright test tests/q1-invalid-login.spec.js",
+    "test:q2": "npx playwright test tests/q2-register-cart.spec.js",
+    "test:q3": "npx playwright test tests/q3-e2e-checkout.spec.js",
+    "test:ui": "npx playwright test --workers=1",
+    "test:api": "newman run api-tests/users-api.postman_collection.json",
+    "test:all": "npm run test:ui && npm run test:api",
+    "report:generate": "npx allure generate ./allure-results --clean -o ./allure-report",
+    "report:open": "npx allure open ./allure-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.0",
+    "allure-playwright": "^3.0.0"
+  }
+}
